@@ -4,7 +4,7 @@
  * @Github: http://gitlab.yzf.net/wuwenzhou
  * @Date: 2020-05-12 08:51:15
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-12 17:57:45
+ * @LastEditTime: 2020-05-12 22:26:05
  */
 var EWMap = []
 var action = false
@@ -85,6 +85,15 @@ chrome.webRequest.onBeforeRequest.addListener(
   { urls: ['<all_urls>'] },
   ['blocking']
 )
+// chrome.webRequest.onCompleted.addListener((details)=>{
+// console.log(details)
+// return null
+// })
+// chrome.webRequest.onCompleted.addListener(
+//   function (details) {
+//     console.log(details)
+//   }
+// )
 
 getLocalStorage()
 window.addEventListener('storage', getLocalStorage, false)

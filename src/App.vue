@@ -4,7 +4,7 @@
  * @Github: https://github.com/fodelf
  * @Date: 2020-05-11 21:44:05
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-12 20:06:58
+ * @LastEditTime: 2020-05-13 00:53:28
  * @FilePath: /workespacemanger/Users/fodelf/git/easyWorkHelper/src/App.vue
  -->
 <template>
@@ -48,7 +48,7 @@
         <van-form style='max-height:300px;overflow-y: auto;'>
           <van-cell-group :title="item.name" v-for='(item, index) in EWData.ajaxList' :key="index">
             <van-switch v-model="item.checked" size="18"  style='position: absolute;z-index: 10;right: 45px;top: -27px;'/>
-            <van-icon name="clear" @click="deleteItem(index)" color="#1989fa" size ='24'  style='position: absolute;z-index: 10;right: 15px;top: -29px;cursor: pointer;' />
+            <van-icon name="clear" @click="deleteItem(index,'ajax')" color="#1989fa" size ='24'  style='position: absolute;z-index: 10;right: 15px;top: -29px;cursor: pointer;' />
             <van-field
               v-model="item.req"
               name="拦截地址"
@@ -57,15 +57,27 @@
             </van-field>
             <van-field
               v-model="item.value"
-                name="替换内容"
-                label="替换内容"
+              rows="4"
+              type="textarea"
+              name="替换内容"
+              label="替换内容"
+              @input = changeJson(index)
               >
             </van-field>
+            <van-cell title="JSON编辑器">
+              <!-- 使用 right-icon 插槽来自定义右侧图标 -->
+              <template #right-icon>
+                <van-switch v-model="item.isShowEditor" size="18" />
+              </template>
+            </van-cell>
+            <vue-json-editor v-if="item.isShowEditor"
+            v-model="item.JSON" lang="zh"
+            @json-change="onJsonChange(index)" @json-save = "onJsonSave" />
           </van-cell-group>
         </van-form>
       </van-collapse-item>
     </van-collapse>
-    <van-dialog v-model="sourceShow" title="新增资源拦截规则" show-cancel-button  @confirm = confirm>
+    <van-dialog v-model="sourceShow" title="新增资源拦截规则" show-cancel-button  @confirm = confirm @close = close>
       <van-form>
         <van-field
           v-model="source.name"
@@ -87,7 +99,7 @@
         />
       </van-form>
     </van-dialog>
-    <van-dialog v-model="showAjax" title="新增请求拦截规则" show-cancel-button  @confirm = confirmAjax>
+    <van-dialog v-model="showAjax" title="新增请求拦截规则" show-cancel-button  @confirm = confirmAjax @close = close>
       <van-form>
         <van-field
           v-model="source.name"
@@ -114,7 +126,11 @@
   </div>
 </template>
 <script>
+import vueJsonEditor from 'vue-json-editor'
 export default {
+  components: {
+    vueJsonEditor
+  },
   data () {
     return {
       activeName: '1',
@@ -131,11 +147,34 @@ export default {
         name: '',
         req: '',
         value: '',
+        JSON: {},
         checked: true
       }
     }
   },
   methods: {
+    changeJson (index) {
+      try {
+        const list = JSON.parse(JSON.stringify(this.EWData.ajaxList))
+        list[index].JSON = JSON.parse(list[index].value)
+        this.$set(this.EWData, 'ajaxList', list)
+      } catch (error) {
+        // item.JSON = {}
+      }
+    },
+    onJsonChange (index) {
+      try {
+        this.$nextTick(() => {
+          const list = JSON.parse(JSON.stringify(this.EWData.ajaxList))
+          list[index].value = JSON.stringify(list[index].JSON)
+          this.$set(this.EWData, 'ajaxList', list)
+        })
+      } catch (error) {
+        // item.JSON = {}
+      }
+    },
+    onJsonSave () {
+    },
     showSource () {
       this.sourceShow = true
     },
@@ -151,8 +190,23 @@ export default {
         this.sourceShow = false
       }
     },
+    close () {
+      this.source = {
+        name: '',
+        req: '',
+        value: '',
+        JSON: {},
+        checked: true
+      }
+    },
     confirmAjax () {
       if (this.source.name && this.source.value) {
+        try {
+          const value = JSON.parse(this.source.value)
+          this.source.JSON = value
+        } catch (error) {
+          // item.JSON = {}
+        }
         this.EWData.ajaxList.push(JSON.parse(JSON.stringify(this.source)))
         this.source.name = ''
         this.source.value = ''
@@ -164,8 +218,12 @@ export default {
       window.localStorage.setItem('EWData', JSON.stringify(this.EWData))
       chrome.storage && chrome.storage.local.set({['EWData']: JSON.stringify(this.EWData)})
     },
-    deleteItem (index) {
-      this.EWData.sourceList.splice(index, 1)
+    deleteItem (index, type) {
+      if (type) {
+        this.EWData.ajaxList.splice(index, 1)
+      } else {
+        this.EWData.sourceList.splice(index, 1)
+      }
     }
   },
   created () {
