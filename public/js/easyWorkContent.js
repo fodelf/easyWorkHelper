@@ -4,14 +4,13 @@
  * @Github: http://gitlab.yzf.net/wuwenzhou
  * @Date: 2020-05-12 19:08:59
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-12 23:48:07
+ * @LastEditTime: 2020-05-14 18:08:05
  */
 const script = document.createElement('script')
 script.setAttribute('type', 'text/javascript')
 // eslint-disable-next-line no-undef
 script.setAttribute('src', chrome.extension.getURL('js/action.js'))
 document.documentElement.appendChild(script)
-
 script.addEventListener('load', () => {
   // eslint-disable-next-line no-undef
   chrome.storage.local.get(['EWData'], (result) => {
