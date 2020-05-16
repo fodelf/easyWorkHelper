@@ -4,7 +4,7 @@
  * @Github: https://github.com/fodelf
  * @Date: 2020-05-11 21:44:05
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-13 00:53:28
+ * @LastEditTime: 2020-05-15 19:45:26
  * @FilePath: /workespacemanger/Users/fodelf/git/easyWorkHelper/src/App.vue
  -->
 <template>
@@ -25,8 +25,8 @@
             <van-icon name="clear" @click="deleteItem(index)" color="#1989fa" size ='24'  style='position: absolute;z-index: 10;right: 15px;top: -29px;cursor: pointer;' />
             <van-field
               v-model="item.req"
-              name="拦截规则"
-              label="拦截规则"
+              name="拦截地址"
+              label="拦截地址"
             >
             </van-field>
             <van-field
@@ -38,21 +38,21 @@
           </van-cell-group>
         </van-form>
       </van-collapse-item>
-      <van-collapse-item title="拦截请求" name="2">
+      <van-collapse-item title="拦截请求(已使用Ajax-hook的项目会冲突)" name="2">
         <van-cell title="拦截列表">
           <template #right-icon>
              <van-switch v-model="EWData.action" size="18" style= 'margin-right: 6px;' />
             <van-icon name="add" style='cursor: pointer;position: relative;top: -2px;' @click="showAjaxAction" color="#1989fa" size ='24' />
           </template>
         </van-cell>
-        <van-form style='max-height:300px;overflow-y: auto;'>
+        <van-form style='max-height:350px;overflow-y: auto;'>
           <van-cell-group :title="item.name" v-for='(item, index) in EWData.ajaxList' :key="index">
             <van-switch v-model="item.checked" size="18"  style='position: absolute;z-index: 10;right: 45px;top: -27px;'/>
             <van-icon name="clear" @click="deleteItem(index,'ajax')" color="#1989fa" size ='24'  style='position: absolute;z-index: 10;right: 15px;top: -29px;cursor: pointer;' />
             <van-field
               v-model="item.req"
-              name="拦截地址"
-              label="拦截地址"
+              name="拦截规则"
+              label="拦截规则"
             >
             </van-field>
             <van-field
@@ -88,14 +88,14 @@
         <van-field
           v-model="source.req"
           name="rule"
-          label="拦截规则"
-          :rules="[{ required: true, message: '请填写规则名称' }]"
+          label="拦截地址"
+          :rules="[{ required: true, message: '请填写拦截地址' }]"
         />
         <van-field
           v-model="source.value"
           name="detail"
           label="替换资源"
-          :rules="[{ required: true, message: '请填写规则详情' }]"
+          :rules="[{ required: true, message: '请填写替换资源' }]"
         />
       </van-form>
     </van-dialog>
@@ -110,8 +110,8 @@
         <van-field
           v-model="source.req"
           name="rule"
-          label="拦截地址"
-          :rules="[{ required: true, message: '请填写拦截地址' }]"
+          label="拦截规则"
+          :rules="[{ required: true, message: '请填写拦截规则' }]"
         />
         <van-field
           v-model="source.value"
