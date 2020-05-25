@@ -4,7 +4,7 @@
  * @Github: https://github.com/fodelf
  * @Date: 2020-05-11 21:44:05
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-15 19:45:26
+ * @LastEditTime: 2020-05-21 17:17:43
  * @FilePath: /workespacemanger/Users/fodelf/git/easyWorkHelper/src/App.vue
  -->
 <template>
@@ -27,6 +27,7 @@
               v-model="item.req"
               name="拦截地址"
               label="拦截地址"
+              placeholder="请输入http://开头地址否则拦截无效"
             >
             </van-field>
             <van-field
@@ -41,7 +42,7 @@
       <van-collapse-item title="拦截请求(已使用Ajax-hook的项目会冲突)" name="2">
         <van-cell title="拦截列表">
           <template #right-icon>
-             <van-switch v-model="EWData.action" size="18" style= 'margin-right: 6px;' />
+             <van-switch v-model="EWData.ajax" size="18" style= 'margin-right: 6px;' />
             <van-icon name="add" style='cursor: pointer;position: relative;top: -2px;' @click="showAjaxAction" color="#1989fa" size ='24' />
           </template>
         </van-cell>
@@ -53,8 +54,13 @@
               v-model="item.req"
               name="拦截规则"
               label="拦截规则"
+              placeholder="请输入需要拦截的url部分字符串"
             >
             </van-field>
+            <van-field
+              v-model="item.url"
+              label="替换url"
+            />
             <van-field
               v-model="item.value"
               rows="4"
@@ -89,6 +95,7 @@
           v-model="source.req"
           name="rule"
           label="拦截地址"
+          placeholder="请输入http://开头地址否则拦截无效"
           :rules="[{ required: true, message: '请填写拦截地址' }]"
         />
         <van-field
@@ -111,7 +118,15 @@
           v-model="source.req"
           name="rule"
           label="拦截规则"
+          placeholder="请输入需要拦截的url部分字符串"
           :rules="[{ required: true, message: '请填写拦截规则' }]"
+        />
+        <van-field
+          v-model="source.url"
+          name="rule"
+          label="替换url"
+          placeholder="可以拦截符合规则的url并进行替换请求的url"
+          :rules="[{ required: true, message: '请填写替换url' }]"
         />
         <van-field
           v-model="source.value"
@@ -119,6 +134,7 @@
           type="textarea"
           name="detail"
           label="替换内容"
+          placeholder="可以拦截符合规则的url并进行替换返回结果"
           :rules="[{ required: true, message: '请填写替换内容' }]"
         />
       </van-form>
@@ -140,13 +156,14 @@ export default {
       EWData: {
         action: true,
         sourceList: [],
-        ajax: true,
+        ajax: false,
         ajaxList: []
       },
       source: {
         name: '',
         req: '',
         value: '',
+        url: '',
         JSON: {},
         checked: true
       }
@@ -187,6 +204,7 @@ export default {
         this.source.name = ''
         this.source.value = ''
         this.source.req = ''
+        this.source.url = ''
         this.sourceShow = false
       }
     },
@@ -244,8 +262,10 @@ export default {
 
 <style lang="less">
 #app {
-  width: 375px;
-  height: 600px;
+  // width: 375px;
+  // height: 600px;
+  height: 100%;
+  background: white;
   /deep/.van-field__label {
     flex: none;
     box-sizing: border-box;
