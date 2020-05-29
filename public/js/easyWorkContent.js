@@ -4,7 +4,7 @@
  * @Github: http://gitlab.yzf.net/wuwenzhou
  * @Date: 2020-05-12 19:08:59
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-21 14:39:38
+ * @LastEditTime: 2020-05-26 16:46:31
  */
 const script = document.createElement('script')
 script.setAttribute('type', 'text/javascript')
@@ -54,9 +54,11 @@ if (window.self === window.top) {
       iframe.style.setProperty('box-shadow', '0 0 15px 2px rgba(0,0,0,0.12)', 'important');
       iframe.frameBorder = "none";
       iframe.src = chrome.extension.getURL("index.html")
-      document.body.appendChild(iframe);
-      let show = false;
-
+      try {
+        document.body.appendChild(iframe);
+      } catch (error) {
+      }
+      let show = false
       chrome.runtime.onMessage.addListener((msg, sender) => {
         if (msg == 'toggle') {
           show = !show;

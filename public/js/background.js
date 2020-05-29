@@ -4,7 +4,7 @@
  * @Github: http://gitlab.yzf.net/wuwenzhou
  * @Date: 2020-05-12 08:51:15
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-21 14:41:35
+ * @LastEditTime: 2020-05-26 16:45:11
  */
 var EWMap = []
 var action = false
@@ -61,7 +61,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         EWMap[i].checked && EWMap[i].req &&
         typeof EWMap[i].value === 'string' &&
         // reg.test(url)
-        EWMap[i].req === url &&
+        url.indexOf(EWMap[i].req) >= 0 &&
         action
       ) {
         if (!/^file:\/\//.test(EWMap[i].value)) {
