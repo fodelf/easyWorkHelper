@@ -4,7 +4,7 @@
  * @Github: https://github.com/fodelf
  * @Date: 2020-05-11 21:44:05
  * @LastEditors: 吴文周
- * @LastEditTime: 2020-05-21 17:17:43
+ * @LastEditTime: 2020-06-18 11:57:00
  * @FilePath: /workespacemanger/Users/fodelf/git/easyWorkHelper/src/App.vue
  -->
 <template>
@@ -126,7 +126,6 @@
           name="rule"
           label="替换url"
           placeholder="可以拦截符合规则的url并进行替换请求的url"
-          :rules="[{ required: true, message: '请填写替换url' }]"
         />
         <van-field
           v-model="source.value"
